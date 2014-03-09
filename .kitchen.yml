@@ -1,0 +1,17 @@
+---
+driver:
+  name: vagrant
+  customize:
+    memory: 512
+
+provisioner:
+  name: chef_zero
+
+platforms:
+  - name: ubuntu-12.04
+
+suites:
+  - name: default
+    run_list:
+      - recipe[skeleton::default]
+    attributes:
