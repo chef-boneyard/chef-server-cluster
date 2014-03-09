@@ -6,22 +6,22 @@
 #
 
 # standalone, tier or ha
-default['topology'] = "tier"
+default['ec']['topology'] = "tier"
 
-default['drbd']['enable'] = false
-default['couchdb']['enable'] = false
-default['rabbitmq']['enable'] = false
-default['postgresql']['enable'] = false
-default['oc_bifrost']['enable'] = false
-default['opscode_certificate']['enable'] = false
-default['opscode_account']['enable'] = false
-default['opscode_solr']['enable'] = false
-default['opscode_expander']['enable'] = false
-default['bookshelf']['enable'] = false
-default['opscode_org_creator']['enable'] = false
-default['opscode_erchef']['enable'] = false
-default['bootstrap']['enable'] = false
-default['opscode_webui']['enable'] = false
-default['opscode_chef_mover']['enable'] = false
-default['nginx']['enable'] = false
-default['keepalived']['enable'] = false
+default['ec']['drbd']['enable'] = false
+default['ec']['couchdb']['enable'] = false
+default['ec']['rabbitmq']['enable'] = false
+default['ec']['postgresql']['enable'] = false
+default['ec']['oc_bifrost']['enable'] = false
+default['ec']['opscode_certificate']['enable'] = false
+default['ec']['opscode_account']['enable'] = false
+default['ec']['opscode_solr']['enable'] = false
+default['ec']['opscode_expander']['enable'] = false
+default['ec']['bookshelf']['enable'] = false
+default['ec']['opscode_org_creator']['enable'] = false
+default['ec']['opscode_erchef']['enable'] = false
+default['ec']['bootstrap']['enable'] = false
+default['ec']['opscode_webui']['enable'] = false
+default['ec']['opscode_chef_mover']['enable'] = false
+default['ec']['nginx']['enable'] = false
+default['ec']['keepalived']['enable'] = false
