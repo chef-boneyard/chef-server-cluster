@@ -8,6 +8,8 @@
 # standalone, tier or ha
 default['ec']['topology'] = 'tier'
 
+default['ec']['bootstrap'] = false
+
 default['ec']['drbd']['enable'] = false
 default['ec']['couchdb']['enable'] = false
 default['ec']['rabbitmq']['enable'] = false
@@ -20,7 +22,6 @@ default['ec']['opscode_expander']['enable'] = false
 default['ec']['bookshelf']['enable'] = false
 default['ec']['opscode_org_creator']['enable'] = false
 default['ec']['opscode_erchef']['enable'] = false
-default['ec']['bootstrap']['enable'] = false
 default['ec']['opscode_webui']['enable'] = false
 default['ec']['opscode_chef_mover']['enable'] = false
 default['ec']['nginx']['enable'] = false

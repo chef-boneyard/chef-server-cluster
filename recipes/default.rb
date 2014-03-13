@@ -10,6 +10,7 @@ ec_vars = {}
 ec_vars[:enabled_svcs]  = []
 ec_vars[:disabled_svcs] = []
 ec_vars[:vips]          = []
+ec_vars[:bootstrap]     = node['ec']['bootstrap']
 
 [
   'drbd',
@@ -21,7 +22,6 @@ ec_vars[:vips]          = []
   'opscode_account',
   'opscode_solr',
   'opscode_expander',
-  'bootstrap',
   'opscode_org_creator',
   'opscode_chef_mover',
   'bookshelf',

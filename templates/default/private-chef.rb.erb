@@ -19,5 +19,8 @@ topology "<%= node['ec']['topology'] %>"
 <% end %>
 
 server "<%= node['fqdn'] %>",
+    <% if @ec_vars[:bootstrap] %>
+    :bootstrap => true,
+    <% end %>
     :role => "<%= @ec_vars[:role] %>",
     :ipaddress => "<%= node['ipaddress'] %>"
