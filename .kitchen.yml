@@ -13,5 +13,5 @@ platforms:
 suites:
   - name: default
     run_list:
-      - recipe[skeleton::default]
+      - recipe[oc-ec::default]
     attributes:

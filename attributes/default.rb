@@ -6,7 +6,7 @@
 #
 
 # standalone, tier or ha
-default['ec']['topology'] = "tier"
+default['ec']['topology'] = 'tier'
 
 default['ec']['drbd']['enable'] = false
 default['ec']['couchdb']['enable'] = false

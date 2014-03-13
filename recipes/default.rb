@@ -6,7 +6,7 @@
 #
 
 ## Move this to a library ##
-ec_vars = Hash.new
+ec_vars = {}
 ec_vars[:enabled_svcs]  = []
 ec_vars[:disabled_svcs] = []
 ec_vars[:vips]          = []
@@ -39,6 +39,15 @@ ec_vars[:vips]          = []
     ec_vars[:disabled_svcs] << svc
   end
 end
+
+backend_svcs = ['drbd', 'couchdb', 'rabbitmq', 'postgresql', 'opscode_expander', 'opscode_solr']
+frontend_svcs = ['nginx', 'oc_bifrost', 'opscode_account', 'opscode-certificate', 'opscode_erchef']
+
+if !(ec_vars[:enabled_svcs] & backend_svcs).empty?
+  ec_vars[:role] = 'backend'
+elsif !(ec_vars[:enabled_svcs] & frontend_svcs).empty?
+  ec_vars[:role] = 'frontend'
+end
 ## End of library ##
 
 package 'private-chef'
@@ -50,7 +59,8 @@ template '/etc/opscode/private-chef.rb' do
   variables :ec_vars => ec_vars
 end
 
-execute 'private-chef-ctl reconfigure' do
+execute 'reconfigure' do
+  command 'private-chef-ctl reconfigure'
   action :nothing
   subscribes :run, 'package[private-chef]'
   subscribes :run, 'template[/etc/opscode/private-chef.rb]'

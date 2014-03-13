@@ -15,8 +15,9 @@ topology "<%= node['ec']['topology'] %>"
 <% end %>
 
 <% @ec_vars[:vips].each do |vip_svc| %>
-    <%= vip_svc %>['vip'] = <%= node['fqdn'] %>
+    <%= vip_svc %>['vip'] = "<%= node['fqdn'] %>"
 <% end %>
 
 server "<%= node['fqdn'] %>",
+    :role => "<%= @ec_vars[:role] %>",
     :ipaddress => "<%= node['ipaddress'] %>"
