@@ -1,5 +1,5 @@
 name             'oc-ec'
-maintainer       'Chef'
+maintainer       'Chef Software, Inc.'
 maintainer_email 'ops@getchef.com'
 license          'All rights reserved'
 description      'A Chef cookbook from Chef for Enterprise Chef'
