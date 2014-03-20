@@ -9,7 +9,7 @@
 ec_vars = {}
 ec_vars[:enabled_svcs]  = []
 ec_vars[:disabled_svcs] = []
-ec_vars[:vips]          = []
+ec_vars[:vips]          = {}
 ec_vars[:bootstrap]     = node['ec']['bootstrap']
 
 [
@@ -32,9 +32,6 @@ ec_vars[:bootstrap]     = node['ec']['bootstrap']
 ].each do |svc|
   if node['ec'][svc]['enable']
     ec_vars[:enabled_svcs] << svc
-    if svc !~ /(opscode_expander|bootstrap|opscode_org_creator|opscode_chef_mover)/
-      ec_vars[:vips] << svc
-    end
   else
     ec_vars[:disabled_svcs] << svc
   end
@@ -47,6 +44,20 @@ if !(ec_vars[:enabled_svcs] & backend_svcs).empty?
   ec_vars[:role] = 'backend'
 elsif !(ec_vars[:enabled_svcs] & frontend_svcs).empty?
   ec_vars[:role] = 'frontend'
+end
+
+{
+  'bookshelf'       => 'bookshelf',
+  'opscode_solr'    => 'opscode_solr',
+  'opscode_erchef'  => 'opscode_erchef',
+  'nginx'           => 'lb',
+  'postgresql'      => 'postgresql',
+  'rabbitmq'        => 'rabbitmq'
+}.each do |svc_name,vip_name|
+  vip_node = search(:node, "ec_#{svc_name}_enable:true").first
+  if vip_node.respond_to? :fqdn
+    ec_vars[:vips][vip_name] = vip_node.fqdn
+  end
 end
 ## End of library ##
 
