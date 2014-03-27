@@ -26,7 +26,8 @@ The cookbook provides the following Rake tasks for testing:
 
 ## License and Author
 
-- Author: Chef
-- Copyright (C) 2014 Chef Software
+- Author: Paul Mooring <paul@getchef.com>
+- Author: Joshua Timberman <joshua@getchef.com>
+- Copyright (C) 2014 Chef Software, Inc. <legal@getchef.com>
 
 All rights reserved.
