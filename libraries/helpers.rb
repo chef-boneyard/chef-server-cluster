@@ -37,13 +37,15 @@ module ChefHelpers
     'nginx',
     'postgesql',
     'rabbitmq'
-  ]
+  ] unless defined?(VIP_SVCS)
 
   def self.ec_vars(attrs)
     ec_vars = {}
     ec_vars[:enabled_svcs]  = []
     ec_vars[:disabled_svcs] = []
     ec_vars[:vips]          = {}
+    # the bootstrap attribute is used on the initial node that sets up all the
+    # secrets required by other nodes.
     ec_vars[:bootstrap]     = attrs['bootstrap']
 
     [
@@ -67,7 +69,7 @@ module ChefHelpers
       if attrs[svc]['enable']
         ec_vars[:enabled_svcs] << svc
         if VIP_SVCS.include?(svc)
-          vip_node = search(:node, "ec_#{svc}_enable:true").first
+          vip_node = Chef::Search::Query.new.search(:node, "ec_#{svc}_enable:true").first
           ec_vars[:vips][svc] = vip_node.fqdn if vip_node.respond_to?(:fqdn)
         end
       else
