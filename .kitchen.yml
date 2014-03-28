@@ -11,7 +11,32 @@ platforms:
   - name: ubuntu-12.04
 
 suites:
-  - name: default
+  - name: fullstack
     run_list:
       - recipe[oc-ec::default]
     attributes:
+      ec:
+        couchdb:
+          enable: true
+        rabbitmq:
+          enable: true
+        postgresql:
+          enable: true
+        oc_bifrost:
+          enable: true
+        opscode_certificate:
+          enable: true
+        opscode_account:
+          enable: true
+        opscode_solr:
+          enable: true
+        opscode_expander:
+          enable: true
+        bookshelf:
+          enable: true
+        opscode_org_creator:
+          enable: true
+        opscode_erchef:
+          enable: true
+        opscode_webui:
+          enable: true
