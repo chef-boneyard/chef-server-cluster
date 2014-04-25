@@ -1,26 +1,21 @@
-# private-chef.rb
-
-# This is an example for the new Hosted Enterprise Chef cookbook.
-# The configuration below is an example of a postgresql server, note
-# that all services are disabled and only postgresql is `true` also
-# it's still required to set backend/frontend as approriate
-
 topology "<%= node['ec']['topology'] %>"
 
-<% @ec_vars[:disabled_svcs].each do |svc| %>
+<% @ec_vars[:disabled_svcs].each do |svc| -%>
 <%= svc %>['enable'] = false
-<% end %>
-<% @ec_vars[:enabled_svcs].each do |svc| %>
+<% end -%>
+<% @ec_vars[:enabled_svcs].each do |svc| -%>
 <%= svc %>['enable'] = true
-<% end %>
+<% end -%>
 
-<% @ec_vars[:vips].each do |vip_name, vip_add| %>
+<% @ec_vars[:vips].each do |vip_name, vip_add| -%>
 <%= vip_name %>['vip'] = "<%= vip_add %>"
-<% end %>
+<% end -%>
 
 server "<%= node['fqdn'] %>",
-    <% if @ec_vars[:bootstrap] %>
+    <% if @ec_vars[:bootstrap][:enable] -%>
     :bootstrap => true,
-    <% end %>
+    <% end -%>
+    <% if @ec_vars[:role] -%>
     :role => "<%= @ec_vars[:role] %>",
+    <% end -%>
     :ipaddress => "<%= node['ipaddress'] %>"

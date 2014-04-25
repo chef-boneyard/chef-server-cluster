@@ -5,7 +5,7 @@
 # Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
 #
 
-ec_vars = ChefHelpers.ec_vars(node['ec'])
+ec_vars = ChefHelpers.ec_vars(node)
 
 package 'private-chef'
 
@@ -16,8 +16,7 @@ template '/etc/opscode/private-chef.rb' do
   variables :ec_vars => ec_vars
 end
 
-execute 'reconfigure' do
-  command 'private-chef-ctl reconfigure'
+execute 'private-chef-ctl reconfigure' do
   action :nothing
   subscribes :run, 'package[private-chef]'
   subscribes :run, 'template[/etc/opscode/private-chef.rb]'
