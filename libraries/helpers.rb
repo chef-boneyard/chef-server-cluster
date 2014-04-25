@@ -39,14 +39,14 @@ module ChefHelpers
     'rabbitmq'
   ] unless defined?(VIP_SVCS)
 
-  def self.ec_vars(attrs)
+  def self.ec_vars(node)
     ec_vars = {}
     ec_vars[:enabled_svcs]  = []
     ec_vars[:disabled_svcs] = []
     ec_vars[:vips]          = {}
     # the bootstrap attribute is used on the initial node that sets up all the
     # secrets required by other nodes.
-    ec_vars[:bootstrap]     = attrs['bootstrap']
+    ec_vars[:bootstrap]     = node['ec']['bootstrap']
 
     [
       'drbd',
@@ -66,16 +66,16 @@ module ChefHelpers
       'nginx',
       'keepalived'
     ].each do |svc|
-      if attrs[svc]['enable']
+      if node['ec'].attribute?(svc) && node['ec'][svc]['enable']
         ec_vars[:enabled_svcs] << svc
-        if VIP_SVCS.include?(svc)
-          vip_node = Chef::Search::Query.new.search(:node, "ec_#{svc}_enable:true").first
-          ec_vars[:vips][svc] = vip_node.fqdn if vip_node.respond_to?(:fqdn)
-        end
+        ec_vars[:vips][svc] = find_vip_for_service(svc, node) if VIP_SVCS.include?(svc)
       else
         ec_vars[:disabled_svcs] << svc
       end
     end
+
+    Chef::Log.debug("Enabled services: #{ec_vars[:enabled_svcs].inspect}")
+    Chef::Log.debug("Disabled services: #{ec_vars[:disabled_svcs].inspect}")
 
     if backend?(ec_vars[:enabled_svcs])
       ec_vars[:role] = 'backend'
@@ -83,8 +83,35 @@ module ChefHelpers
       ec_vars[:role] = 'frontend'
     end
 
+    Chef::Log.debug("I'm a #{ec_vars[:role]}")
     ec_vars
   end
+
+  def self.find_vip_for_service(service, node)
+    query_components = [
+      "ec_#{service}_enable:true",
+      "chef_environment:#{node.chef_environment}"
+    ]
+
+    Chef::Log.debug("looking for #{service} VIP on #{node.name}")
+    results = Chef::Search::Query.new.search(:node, query_components.join(' AND ')).first
+    # if we don't get any results for what we wanted, assume this
+    # node. Future Chef runs can sort this out later.
+    if results.nil? || results.empty?
+      vip_node = node
+    else
+      vip_node = results.first
+    end
+
+    Chef::Log.debug("vip node is #{vip_node.inspect}")
+    vip_node['ec'][service]['vip'] || vip_node['ipaddress']
+  end
+
+  def self.secret_files
+    %w{pivotal.cert  pivotal.pem  webui_priv.pem  webui_pub.pem  worker-private.pem  worker-public.pem}
+  end
+
+  private
 
   def self.backend?(enabled_svcs)
     (enabled_svcs & BACKEND_SVCS).empty?
@@ -93,4 +120,5 @@ module ChefHelpers
   def self.frontend?(enabled_svcs)
     (enabled_svcs & FRONTEND_SVCS).empty?
   end
+
 end
