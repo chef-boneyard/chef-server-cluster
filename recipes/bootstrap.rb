@@ -24,6 +24,15 @@ template 'bootstrap-private-chef.rb' do
   variables :ec_vars => ec_vars
 end
 
+# This goes after the private-chef.rb is written because REASONS.
+ChefHelpers::FRONTEND_SVCS.each do |fesvc|
+  node.default['ec'][fesvc]['enable'] = false
+end
+
+%w{rabbitmq opscode_expander opscode_solr}.each do |searchsvc|
+  node.default['ec'][searchsvc]['enable'] = false
+end
+
 execute 'bootstrap-reconfigure' do
   command 'private-chef-ctl reconfigure'
   action :nothing
