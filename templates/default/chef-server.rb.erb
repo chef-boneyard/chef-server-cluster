@@ -1,0 +1,16 @@
+topology "<%= @ec_vars[:topology] %>"
+
+# Analytics configuration
+dark_launch['actions'] = <%= @ec_vars[:dark_launch_actions] %>
+<% @ec_vars[:vips].each do |vip_name, vip_add| -%>
+<%= vip_name %>['vip'] = "<%= vip_add %>"
+<% end -%>
+rabbitmq['node_ip_address'] = "<%= @ec_vars[:rabbitmq_node_ip_address] %>"
+
+# Server blocks
+<% @ec_vars[:servers].each do |server| -%>
+server "<%= server[:fqdn] %>",
+  :ipaddress => "<%= server[:ipaddress] %>",
+  <% ':bootstrap => true,' if server[:bootstrap] %>
+  :role => "<%= server[:role] %>"
+<% end -%>

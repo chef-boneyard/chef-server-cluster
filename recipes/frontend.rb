@@ -1,22 +1,33 @@
+include_recipe 'oc-ec'
+include_recipe 'chef-vault'
+
 node.default['ec']['role'] = 'frontend'
 
-# TODO: the VIPs should probably come from a more dynamic thing like a
-# data bag item, but we need to sort out the HA problem first.
-ChefHelpers::FRONTEND_SVCS.each do |svc|
-  node.default['ec'][svc]['vip'] = node['ipaddress']
+ec_servers = search('node', 'ec_role:frontend OR ec_role:backend')
+
+ec_vars = {
+           topology: 'tier',
+           disabled_svcs: [],
+           enabled_svcs: [],
+           vips: {},
+           api_fqdn: 'manage.chef.sh',
+           notification_email: 'ops@chef.io',
+           servers: ec_servers
+          }
+
+node.default['ec'].merge!(ec_vars)
+
+template '/etc/opscode/chef-server.rb' do
+  source 'chef-server.rb.erb'
+  variables :ec_vars => ec_vars
+  notifies :reconfigure, 'chef_server_ingredient[chef-server-core]', :immediately
 end
 
-%w{opscode-erchef opscode-account opscode-webui oc_bifrost}.map do |svc|
-  node.default['lb']['upstream'][svc] = [node['ipaddress']]
+chef_server_ingredient 'opscode-manage' do
+  notifies :reconfigure, 'chef_server_ingredient[opscode-manage]'
 end
 
-# Use the helper to find the VIP for the backend nodes in the LB.
-node.default['lb']['upstream'] = {
-  'opscode-solr' => ChefHelpers.find_vip_for_service('opscode-solr', node),
-  'bookshelf' => ChefHelpers.find_vip_for_service('bookshelf', node)
-}
+chef_server_ingredient 'opscode-reporting' do
+  notifies :reconfigure, 'chef_server_ingredient[opscode-reporting]'
+end
 
-node.default['opscode-account']['listen'] = node['ipaddress']
-node.default['redis_lb']['bind'] = node['ipaddress']
-node.default['oc_bifrost']['listen'] = node['ipaddress']
-node.default['opscode-webui']['listen'] = [node['ipaddress'], node['opscode-webui']['port']].join(':')
