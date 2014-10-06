@@ -7,3 +7,5 @@ group :integration do
   # cookbook 'apt'
   cookbook 'test', :path => './test/fixtures/cookbooks/test'
 end
+
+cookbook 'chef-server-ingredient', github: 'opscode-cookbooks/chef-server-ingredient'
