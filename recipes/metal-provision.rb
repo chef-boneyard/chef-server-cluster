@@ -1,6 +1,11 @@
 # This recipe is run on the "provisioning" node. It makes all the other nodes using chef-metal.
 
 include_recipe 'oc-ec::metal'
+# This needs to move to a chef_vault_item, and use our `data`
+# convention for the sub-key of where the secrets are. It should also
+# use an attribute for the name, so basically uncomment this line when
+# we're ready for that.
+#ssh_keys = chef_vault_item('vault', node['oc-ec']['metal-provisioner-key-name'])['data']
 ssh_keys = data_bag_item('secrets', 'hc-metal-provisioner-chef-aws-us-west-2')
 
 directory '/tmp/ssh' do
@@ -11,27 +16,19 @@ directory '/tmp/stash' do
   recursive true
 end
 
-file '/tmp/ssh/hc-metal-provisioner' do
+file '/tmp/ssh/id_rsa' do
   content ssh_keys['private_ssh_key']
   sensitive true
 end
 
-file '/tmp/ssh/hc-metal-provisioner.pub' do
+file '/tmp/ssh/id_rsa.pub' do
   content ssh_keys['public_ssh_key']
   sensitive true
 end
 
-link '/tmp/ssh/id_rsa' do
-  to '/tmp/ssh/hc-metal-provisioner'
-end
-
-link '/tmp/ssh/id_rsa.pub' do
-  to '/tmp/ssh/hc-metal-provisioner.pub'
-end
-
 fog_key_pair 'hc-metal-provisioner' do
-  private_key_path '/tmp/ssh/hc-metal-provisioner'
-  public_key_path '/tmp/ssh/hc-metal-provisioner.pub'
+  private_key_path '/tmp/ssh/id_rsa'
+  public_key_path '/tmp/ssh/id_rsa.pub'
 end
 
 machine 'bootstrap-backend' do

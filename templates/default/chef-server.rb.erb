@@ -1,16 +1,26 @@
-topology "<%= @ec_vars[:topology] %>"
+topology "<%= @ec_vars['topology'] %>"
 
 # Analytics configuration
-dark_launch['actions'] = <%= @ec_vars[:dark_launch_actions] %>
-<% @ec_vars[:vips].each do |vip_name, vip_add| -%>
-<%= vip_name %>['vip'] = "<%= vip_add %>"
+dark_launch['actions'] = <%= @ec_vars['dark_launch']['actions'] %>
+<% if @ec_vars.has_key?('vips') -%>
+<%   @ec_vars['vips'].each do |vip_name, vip_add| -%>
+<%=    vip_name %>['vip'] = "<%= vip_add %>"
+<%   end -%>
 <% end -%>
-rabbitmq['node_ip_address'] = "<%= @ec_vars[:rabbitmq_node_ip_address] %>"
+<% if @ec_vars.has_key?('rabbitmq') && @ec_vars['rabbitmq'].has_key?('node_ip_address') -%>
+rabbitmq['node_ip_address'] = "<%= @ec_vars['rabbitmq']['node_ip_address'] %>"
+<% end -%>
 
 # Server blocks
-<% @ec_vars[:servers].each do |server| -%>
+<% @ec_servers.each do |server| -%>
 server "<%= server[:fqdn] %>",
   :ipaddress => "<%= server[:ipaddress] %>",
   <% ':bootstrap => true,' if server[:bootstrap] %>
   :role => "<%= server[:role] %>"
+<%   if server[:role] == 'backend' -%>
+backend_vip "<%= server[:fqdn] %> ",
+  :ipaddress => "<%= server[:ipaddress] %>"
+<%   end -%>
 <% end -%>
+
+#chef_server_webui['enable'] = false
