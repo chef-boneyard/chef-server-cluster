@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: chef-server-cluster
-# Recipes:: metal-clean
+# Recipes:: save-secrets
 #
 # Author: Joshua Timberman <joshua@getchef.com>
 # Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
@@ -17,27 +17,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+# This recipe has bugs and isn't used yet, but I wanted to make it
+# available as a starting point.
+include_recipe 'chef-vault'
 
-include_recipe 'chef-server-cluster::metal'
+secret_files = ChefHelpers.secret_files
+data_bag_name = 'bootstrap-secrets'
 
-machine 'analytics' do
-  action :destroy
-end
+chef_gem 'cheffish'
+require 'cheffish'
+chef_data_bag data_bag_name
 
-machine 'frontend' do
-  action :destroy
-end
-
-machine 'bootstrap-backend' do
-  action :destroy
-end
-
-directory '/tmp/ssh' do
-  recursive true
-  action :delete
-end
-
-directory '/tmp/stash' do
-  recursive true
-  action :delete
+secret_files.each do |secret|
+  next unless ::File.exist?(::File.join('/etc/opscode', secret))
+  chef_vault_secret "store-generated-secret-#{secret}-#{node.chef_environment}" do
+    data_bag data_bag_name
+    raw_data({
+        'id'=> "#{secret.gsub(/\.[a-z]+/, '_')}_#{node.chef_environment}",
+        'data' => IO.read("/etc/opscode/#{secret}")
+    })
+    admins 'admin'
+    search '*:*'
+  end
 end
