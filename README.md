@@ -111,7 +111,7 @@ Create `data_bags/secrets/private-chef-secrets-_default.json` data bag item with
       "vrrp_instance_password": "SOMETHINGRANDOMLYAWESOMELIKEASHA512"
     },
     "oc_bifrost": {
-      "superuser_id": SOMETHINGTHIRTYTWOCHARACTERS",
+      "superuser_id": "SOMETHINGTHIRTYTWOCHARACTERS",
       "sql_password": "SOMETHINGRANDOMLYAWESOMELIKEASHA512",
       "sql_ro_password": "SOMETHINGRANDOMLYAWESOMELIKEASHA512"
     },
