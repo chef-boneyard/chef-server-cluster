@@ -117,7 +117,7 @@ Create `data_bags/secrets/private-chef-secrets-_default.json` data bag item with
     },
     "bookshelf": {
       "access_key_id": "SOMETHINGTHIRTYTWOCHARACTERS",
-      "secret_access_key": "SOMETHINGRANDOMLYAWESOMELIKEASHA512""
+      "secret_access_key": "SOMETHINGRANDOMLYAWESOMELIKEASHA512"
     }
   }
 }
