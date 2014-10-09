@@ -18,7 +18,7 @@
       "os": "GNU/Linux"
     },
     "os": "linux",
-    "os_version": "3.5.0-23-generic",
+    "os_version": "3.13.0-35-generic",
     "root_group": "root",
     "etc": {
       "passwd": {
@@ -40,8 +40,8 @@
       }
     },
     "current_user": "vagrant",
-    "hostname": "sample-server-ubuntu-1204",
-    "fqdn": "sample-server-ubuntu-1204.example.com",
+    "hostname": "sample-server-ubuntu-1404",
+    "fqdn": "sample-server-ubuntu-1404.example.com",
     "domain": "example.com",
     "ipaddress": "10.0.2.47",
     "macaddress": "08:00:27:F9:09:1F",
@@ -53,12 +53,12 @@
     "ohai_time": 1389202858.7629967,
     "lsb": {
       "id": "Ubuntu",
-      "release": "12.04",
-      "codename": "precise",
-      "description": "Ubuntu 12.04.2 LTS"
+      "release": "14.04",
+      "codename": "trusty",
+      "description": "Ubuntu 14.04.1 LTS"
     },
     "platform": "ubuntu",
-    "platform_version": "12.04",
+    "platform_version": "14.04",
     "platform_family": "debian",
     "cpu": {
       "total": 1,

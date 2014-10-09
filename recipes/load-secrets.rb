@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: chef-server-cluster
-# Recipes:: metal-clean
+# Recipes:: load-secrets
 #
 # Author: Joshua Timberman <joshua@getchef.com>
 # Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
@@ -17,27 +17,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+# This recipe has bugs and isn't used yet, but I wanted to make it
+# available as a starting point.
+#
+ChefHelpers.secret_files.each do |secret|
+  secret_id = "#{secret.gsub(/\\.[a-z]+/, '_')}_#{node.chef_environment}"
+  secret_content = chef_vault_item('bootstrap-secrets', secret_id)['data']
 
-include_recipe 'chef-server-cluster::metal'
-
-machine 'analytics' do
-  action :destroy
-end
-
-machine 'frontend' do
-  action :destroy
-end
-
-machine 'bootstrap-backend' do
-  action :destroy
-end
-
-directory '/tmp/ssh' do
-  recursive true
-  action :delete
-end
-
-directory '/tmp/stash' do
-  recursive true
-  action :delete
+  file "/etc/opscode/#{secret}" do
+    content secret_content
+  end
 end
