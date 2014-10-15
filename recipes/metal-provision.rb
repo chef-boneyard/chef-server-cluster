@@ -29,7 +29,8 @@ include_recipe 'chef-server-cluster::metal'
 
 #ssh_keys = data_bag_item('secrets', 'hc-metal-provisioner-chef-aws-us-west-2')
 
-ssh_keys = data_bag_item('secrets', node['chef-server-cluster']['metal-provisioner-key-name'])
+key_name = node['chef-server-cluster']['aws']['machine_options']['bootstrap_options']['key_name']
+ssh_keys = data_bag_item('secrets', key_name)
 
 directory '/tmp/ssh' do
   recursive true
@@ -49,7 +50,7 @@ file '/tmp/ssh/id_rsa.pub' do
   sensitive true
 end
 
-fog_key_pair node['chef-server-cluster']['metal-provisioner-key-name'] do
+fog_key_pair key_name do
   private_key_path '/tmp/ssh/id_rsa'
   public_key_path '/tmp/ssh/id_rsa.pub'
 end
