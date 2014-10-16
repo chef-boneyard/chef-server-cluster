@@ -26,7 +26,8 @@ include_recipe 'chef-server-cluster::metal'
 # use an attribute for the name, so basically uncomment this line when
 # we're ready for that.
 #ssh_keys = chef_vault_item('vault', node['chef-server-cluster']['metal-provisioner-key-name'])['data']
-ssh_keys = data_bag_item('secrets', 'hc-metal-provisioner-chef-aws-us-west-2')
+
+ssh_keys = data_bag_item('secrets', node['chef-server-cluster']['metal-provisioner-key-name'])
 
 directory '/tmp/ssh' do
   recursive true
@@ -46,7 +47,7 @@ file '/tmp/ssh/id_rsa.pub' do
   sensitive true
 end
 
-fog_key_pair 'hc-metal-provisioner' do
+fog_key_pair node['chef-server-cluster']['aws']['machine_options']['bootstrap_options']['key_name'] do
   private_key_path '/tmp/ssh/id_rsa'
   public_key_path '/tmp/ssh/id_rsa.pub'
 end

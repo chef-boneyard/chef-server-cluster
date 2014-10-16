@@ -20,6 +20,7 @@
 default['chef-server-cluster']['topology'] = 'tier'
 default['chef-server-cluster']['role'] = 'frontend'
 default['chef-server-cluster']['bootstrap']['enable'] = false
+default['chef-server-cluster']['metal-provisioner-key-name'] = 'hc-metal-provisioner-chef-aws-us-west-2'
 
 # these use _ instead of - because it maps to the machine_options in
 # chef-metal-fog.
