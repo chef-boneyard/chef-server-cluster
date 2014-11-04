@@ -25,7 +25,7 @@ include_recipe 'chef-server-cluster::metal'
 # convention for the sub-key of where the secrets are. It should also
 # use an attribute for the name, so basically uncomment this line when
 # we're ready for that.
-#ssh_keys = chef_vault_item('vault', node['chef-server-cluster']['metal-provisioner-key-name'])['data']
+# ssh_keys = chef_vault_item('vault', node['chef-server-cluster']['metal-provisioner-key-name'])['data']
 
 ssh_keys = data_bag_item('secrets', node['chef-server-cluster']['metal-provisioner-key-name'])
 
