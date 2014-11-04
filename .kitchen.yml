@@ -1,8 +1,6 @@
 ---
 driver:
   name: vagrant
-  customize:
-    memory: 512
 
 driver_config:
   network:
@@ -55,3 +53,14 @@ suites:
   - name: standalone
     run_list:
       - recipe[chef-server-cluster::standalone]
+      - recipe[chef-server-cluster::create_admin]
+      - recipe[chef-server-cluster::create_org]
+    attributes:
+      chef-server-cluster:
+        admin:
+          username: pipeline
+          firstname: pipeline
+          lastename: user
+          email: lauck@getchef.com
+          password: pipeline
+          private_key_path: '/tmp/pipeline.pem'
