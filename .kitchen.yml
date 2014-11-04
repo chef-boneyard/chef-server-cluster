@@ -18,7 +18,6 @@ platforms:
   - name: ubuntu-12.04
   - name: ubuntu-14.04
   - name: centos-6.5
-  - name: centos-7.0
 
 suites:
   - name: fullstack
