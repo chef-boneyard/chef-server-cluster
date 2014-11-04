@@ -35,14 +35,14 @@ default['chef-server-cluster']['aws']['machine_options'] = {
                                             }
                     }
 
-default['chef-server-cluster']['admin']['username'] = 'opsmaster'
-default['chef-server-cluster']['admin']['firstname'] = 'Chef'
-default['chef-server-cluster']['admin']['lastname'] = 'Operations'
-default['chef-server-cluster']['admin']['email'] = 'opsmaster@getchef.com'
-default['chef-server-cluster']['admin']['password'] = 'opsmaster'
-default['chef-server-cluster']['admin']['private_key_path'] = '/tmp/opsmaster.pem'
+default['chef-server-cluster']['admin']['username'] = 'flock'
+default['chef-server-cluster']['admin']['firstname'] = 'Florian'
+default['chef-server-cluster']['admin']['lastname'] = 'Lock'
+default['chef-server-cluster']['admin']['email'] = 'ops@example.com'
+default['chef-server-cluster']['admin']['password'] = 'DontUseThis4Real'
+default['chef-server-cluster']['admin']['private_key_path'] = '/tmp/flock.pem'
 
-default['chef-server-cluster']['organization'] = 'default'
-default['chef-server-cluster']['organization_long_name'] = 'Default Organization'
+default['chef-server-cluster']['organization'] = 'example'
+default['chef-server-cluster']['organization_long_name'] = 'Example Organization'
 default['chef-server-cluster']['organization_private_key'] = "#{node['chef-server-cluster']['organization']}-validator.pem"
 default['chef-server-cluster']['organization_private_key_path'] = File.join('/tmp', node['chef-server-cluster']['organization_private_key'])
