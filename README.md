@@ -154,6 +154,8 @@ Navigate to https://frontend-fqdn and sign up!
 ### Platform:
 
 64 bit Ubuntu 14.04
+64 bit Ubuntu 12.04
+64 bit CentOS 6.5
 
 Other platforms will be added in the future according to the platforms that CHEF supports for Chef Server 12.
 

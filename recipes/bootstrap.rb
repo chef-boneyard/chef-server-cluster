@@ -33,7 +33,7 @@ chef_server_config = data_bag_item('chef_server', 'topology').to_hash
 chef_server_config.delete('id')
 
 # TODO: (jtimberman) Replace this with partial_search.
-chef_servers = search('node', 'chef-server-cluster_role:backend').map do |server| #~FC003
+chef_servers = search('node', 'chef-server-cluster_role:backend').map do |server| # ~FC003
   {
     :fqdn => server['fqdn'],
     :ipaddress => server['ipaddress'],
