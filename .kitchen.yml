@@ -1,19 +1,27 @@
 ---
 driver:
   name: vagrant
+
+driver_config:
+  network:
+    - ["forwarded_port", {guest: 443, host: 9443, auto_correct: true}]
+    - ["forwarded_port", {guest: 80, host: 9080, auto_correct: true}]
+    - ["private_network", {ip: "33.33.33.15"}]
   customize:
-    memory: 512
+    memory: 2048
+    cpus: 2
 
 provisioner:
   name: chef_zero
 
 platforms:
   - name: ubuntu-12.04
+  - name: centos-6.5
 
 suites:
   - name: fullstack
     run_list:
-      - recipe[oc-ec::default]
+      - recipe[chef-server-cluster::default]
     attributes:
       ec:
         couchdb:
@@ -40,3 +48,15 @@ suites:
           enable: true
         opscode_webui:
           enable: true
+  - name: standalone
+    run_list:
+      - recipe[chef-server-cluster::standalone]
+      - recipe[chef-server-cluster::create_admin]
+      - recipe[chef-server-cluster::create_org]
+    attributes:
+      admin:
+        username: flock
+        firstname: Florian
+        lastname: Lock
+        email: ops@example.com
+        password: DontUseThis4Real
