@@ -81,7 +81,7 @@ end
 
 # These two resources set permissions on the files to make them
 # readable as a workaround for
-# https://github.com/opscode/chef-metal/issues/174
+# https://github.com/opscode/chef-provisioning/issues/174
 file '/etc/opscode-analytics/actions-source.json' do
   mode 00644
   subscribes :create, 'chef_server_ingredient[chef-server-core]', :immediately

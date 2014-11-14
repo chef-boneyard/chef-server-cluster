@@ -9,6 +9,6 @@ gem 'rubocop', '~> 0.18.0'
 group :integration do
   gem 'test-kitchen', '~> 1.0'
   gem 'kitchen-vagrant'
-  gem 'chef-metal', :git => 'git://github.com/opscode/chef-metal', :branch => 'dt/driver-surgery'
+  gem 'chef-provisioning'
   gem 'cheffish'
 end

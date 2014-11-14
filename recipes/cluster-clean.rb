@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: chef-server-cluster
-# Recipes:: metal
+# Recipes:: cluster-clean
 #
 # Author: Joshua Timberman <joshua@getchef.com>
 # Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
@@ -17,11 +17,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# chef-metal-fog depends on chef-metal and cheffish.
-chef_gem 'chef-metal-fog'
-require 'chef_metal_fog'
 
-# This requires that the desired AWS account to use is configured in
-# ~/.aws/config as `default`.
-with_driver("fog:AWS:default:#{node['chef-server-cluster']['aws']['region']}")
-with_machine_options(node['chef-server-cluster']['aws']['machine_options'])
+include_recipe 'chef-server-cluster::chef-provisioning'
+
+machine 'analytics' do
+  action :destroy
+end
+
+machine 'frontend' do
+  action :destroy
+end
+
+machine 'bootstrap-backend' do
+  action :destroy
+end
+
+directory '/tmp/ssh' do
+  recursive true
+  action :delete
+end
+
+directory '/tmp/stash' do
+  recursive true
+  action :delete
+end
