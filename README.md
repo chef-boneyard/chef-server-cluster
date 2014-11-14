@@ -194,7 +194,7 @@ These may change wildly as we develop the cookbook. The intention behind the cur
 * load-secrets.rb: loads secrets from a data bag (chef-vault). This is incomplete and non-functional at this time.
 * cluster-clean.rb: cleans up all the instances. Don't use against a live running cluster! **This is provided for testing purposes only!! It will destroy all the cluster's data!**
 * cluster-provision.rb: performs the provisioning of the instances in the cluster. In the future it will be more dynamic through the use of the topology data bag item.
-* chef-provisioning.rb: common options for "clean" and "provision" are initialized here.
+* setup-provisioner.rb: common options for "clean" and "provision" are initialized here.
 * save-secrets.rb: saves secrets to a data bag (chef-vault). This is incomplete and non-functional at this time.
 * standalone.rb: stands up a standalone single Chef Server.
 

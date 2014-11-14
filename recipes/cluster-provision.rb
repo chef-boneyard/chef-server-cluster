@@ -17,9 +17,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# This recipe is run on the "provisioning" node. It makes all the other nodes using chef-provisioning.
+# This recipe is run on the provisioner node. It creates all the other nodes using chef-provisioning.
 
-include_recipe 'chef-server-cluster::chef-provisioning'
+include_recipe 'chef-server-cluster::setup-provisioner'
 
 # This needs to move to a chef_vault_item, and use our internal `data`
 # convention for the sub-key of where the secrets are. It should also

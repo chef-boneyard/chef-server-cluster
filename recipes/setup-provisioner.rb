@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: chef-server-cluster
-# Recipes:: chef-provisioning
+# Recipes:: setup-provisioner
 #
 # Author: Joshua Timberman <joshua@getchef.com>
 # Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>

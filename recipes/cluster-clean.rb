@@ -18,7 +18,7 @@
 # limitations under the License.
 #
 
-include_recipe 'chef-server-cluster::chef-provisioning'
+include_recipe 'chef-server-cluster::setup-provisioner'
 
 machine 'analytics' do
   action :destroy
