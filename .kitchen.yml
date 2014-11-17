@@ -13,7 +13,7 @@ platforms:
 suites:
   - name: fullstack
     run_list:
-      - recipe[oc-ec::default]
+      - recipe[chef-server-cluster::default]
     attributes:
       ec:
         couchdb:
