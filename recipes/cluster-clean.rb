@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: chef-server-cluster
-# Recipes:: metal-clean
+# Recipes:: cluster-clean
 #
 # Author: Joshua Timberman <joshua@getchef.com>
 # Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
@@ -18,7 +18,7 @@
 # limitations under the License.
 #
 
-include_recipe 'chef-server-cluster::metal'
+include_recipe 'chef-server-cluster::setup-provisioner'
 
 machine 'analytics' do
   action :destroy

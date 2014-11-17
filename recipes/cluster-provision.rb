@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: chef-server-cluster
-# Recipes:: mtal-provision
+# Recipes:: cluster-provision
 #
 # Author: Joshua Timberman <joshua@getchef.com>
 # Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
@@ -17,17 +17,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# This recipe is run on the "provisioning" node. It makes all the other nodes using chef-metal.
+# This recipe is run on the provisioner node. It creates all the other nodes using chef-provisioning.
 
-include_recipe 'chef-server-cluster::metal'
+include_recipe 'chef-server-cluster::setup-provisioner'
 
 # This needs to move to a chef_vault_item, and use our internal `data`
 # convention for the sub-key of where the secrets are. It should also
 # use an attribute for the name, so basically uncomment this line when
 # we're ready for that.
-#ssh_keys = chef_vault_item('vault', node['chef-server-cluster']['metal-provisioner-key-name'])['data']
+#ssh_keys = chef_vault_item('vault', node['chef-server-cluster']['chef-provisioner-key-name'])['data']
 
-ssh_keys = data_bag_item('secrets', node['chef-server-cluster']['metal-provisioner-key-name'])
+ssh_keys = data_bag_item('secrets', node['chef-server-cluster']['chef-provisioner-key-name'])
 
 directory '/tmp/ssh' do
   recursive true

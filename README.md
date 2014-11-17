@@ -1,6 +1,6 @@
 # chef-server-cluster
 
-Manage Chef Server clusters with Chef, using chef-metal in a provisioning recipe that can run from a local machine, or a provisioning instance.
+Manage Chef Server clusters with Chef, using chef-provisioning in a provisioning recipe that can run from a local machine, or a provisioning instance.
 
 **NOTE** THERE BE DRAGONS HERE.
 
@@ -40,7 +40,7 @@ I used `hc-metal-provisioner` as the name of the SSH key pair. It's likely this 
 ```ruby
 config_dir = File.dirname(__FILE__)
 chef_server_url 'http://localhost:7799'
-node_name        'metal-provisioner'
+node_name        'chef-provisioner'
 cookbook_path [File.join(config_dir, '..', 'cookbooks')]
 private_keys 'hc-metal-provisioner' => '/tmp/ssh/id_rsa'
 public_keys  'hc-metal-provisioner' => '/tmp/ssh/id_rsa.pub'
@@ -71,7 +71,7 @@ This data bag item informs configuration options that (may) need to be present i
 
 #### Create a secrets data bag and populate it with the SSH keys
 
-For example from above, I'm using an item named `hc-metal-provisioner-chef-aws-us-west-2`. This is hardcoded in the `oc-ec::metal-provision` recipe, but one could edit that or make it an attribute. This will move to a Chef Vault item at some point as noted in the comment in the recipe.
+For example from above, I'm using an item named `hc-metal-provisioner-chef-aws-us-west-2`. This is hardcoded in the `chef-server-cluster::cluster-provision` recipe, but one could edit that or make it an attribute. This will move to a Chef Vault item at some point as noted in the comment in the recipe.
 
 ```json
 {
@@ -140,7 +140,7 @@ berks upload
 #### Run chef-client on the local system (provisioning node)
 
 ```
-chef-client -c .chef/knife.rb -o oc-ec::metal-provision
+chef-client -c .chef/knife.rb -o chef-server-cluster::cluster-provision
 ```
 
 The outcome should be:
@@ -169,9 +169,9 @@ See `attributes/default.rb` for default values. Here's how this cookbook's attri
 * `topology`: configures the top-level topology in `/etc/opscode/chef-server.rb`
 * `role`: sets the role for the specific node, affects how configuration is rendered in `/etc/opscode/chef-server.rb`.
 * `bootstrap['enable']`: whether bootstrapping Chef Server should be done. This triggers whether the configuration in `/etc/opscode/chef-server.rb` will run the bootstrap recipes. This should only be enabled on the first `backend` node in the cluster.
-* `aws`: A configuration hash for Amazon Web Services EC2, used by the metal recipes to launch instances.
+* `aws`: A configuration hash for Amazon Web Services EC2, used by the chef-provisioning recipes to launch instances.
 * `aws['region']`: sets the region where the instances should be launched. The default is `us-west-2` because that's where CHEF's operations team is building the new infrastructure.
-* `aws['machine_options']`: this is a hash passed directly into the Chef Metal recipe DSL method, `with_machine_options`. If overriding these attributes, you probably want:
+* `aws['machine_options']`: this is a hash passed directly into the Chef Provisioning recipe DSL method, `with_machine_options`. If overriding these attributes, you probably want:
 
 ```ruby
 node['chef-server-cluster']['aws']['machine_options']['ssh_username']
@@ -192,9 +192,9 @@ These may change wildly as we develop the cookbook. The intention behind the cur
 * default.rb: manage the common resources required by backend and frontend systems.
 * frontend.rb: stands up a front end system.
 * load-secrets.rb: loads secrets from a data bag (chef-vault). This is incomplete and non-functional at this time.
-* metal-clean.rb: cleans up all the instances. Don't use against a live running cluster! **This is provided for testing purposes only!! It will destroy all the cluster's data!**
-* metal-provision.rb: performs the provisioning of the instances in the cluster. In the future it will be more dynamic through the use of the topology data bag item.
-* metal.rb: common metal options for "clean" and "provision" are initialized here.
+* cluster-clean.rb: cleans up all the instances. Don't use against a live running cluster! **This is provided for testing purposes only!! It will destroy all the cluster's data!**
+* cluster-provision.rb: performs the provisioning of the instances in the cluster. In the future it will be more dynamic through the use of the topology data bag item.
+* setup-provisioner.rb: common options for "clean" and "provision" are initialized here.
 * save-secrets.rb: saves secrets to a data bag (chef-vault). This is incomplete and non-functional at this time.
 * standalone.rb: stands up a standalone single Chef Server.
 

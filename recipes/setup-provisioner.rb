@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: chef-server-cluster
-# Recipes:: metal
+# Recipes:: setup-provisioner
 #
 # Author: Joshua Timberman <joshua@getchef.com>
 # Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
@@ -17,9 +17,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# chef-metal-fog depends on chef-metal and cheffish.
-chef_gem 'chef-metal-fog'
-require 'chef_metal_fog'
+# chef-provisioning-fog depends on chef-provisioning and cheffish.
+chef_gem 'chef-provisioning-fog'
+require 'chef/provisioning/fog_driver'
 
 # This requires that the desired AWS account to use is configured in
 # ~/.aws/config as `default`.
