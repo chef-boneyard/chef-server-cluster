@@ -1,7 +1,7 @@
 #
 # Cookbook Name:: chef-server-cluster
 # Recipes:: setup-ssh-keys
-# Author: Patrick Wright <patrick@getchef.com>
+# Author: Joshua Timberman <joshua@getchef.com>
 # Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
