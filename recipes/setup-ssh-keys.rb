@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-require 'chef/provisioning/fog_driver'
+require 'chef/provisioning/fog_driver/driver'
 
 # This needs to move to a chef_vault_item, and use our internal `data`
 # convention for the sub-key of where the secrets are. It should also

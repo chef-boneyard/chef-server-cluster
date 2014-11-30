@@ -19,7 +19,8 @@
 #
 # chef-provisioning-fog depends on chef-provisioning and cheffish.
 chef_gem 'chef-provisioning-fog'
-require 'chef/provisioning/fog_driver'
+chef_gem 'chef-provisioning-aws'
+require 'chef/provisioning/fog_driver/driver'
 
 # This requires that the desired AWS account to use is configured in
 # ~/.aws/config as `default`.
