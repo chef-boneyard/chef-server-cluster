@@ -62,6 +62,12 @@ template '/etc/opscode/chef-server.rb' do
   notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
 end
 
+hostsfile_entry node['ipaddress'] do
+  hostname  node['fqdn']
+  aliases   [chef_server_config['api_fqdn']]
+  action    :create
+end
+
 chef_server_ingredient 'opscode-manage' do
   notifies :reconfigure, 'chef_server_ingredient[opscode-manage]'
 end

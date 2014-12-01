@@ -45,6 +45,12 @@ machine_file '/etc/opscode/webui_pub.pem' do
   action :download
 end
 
+machine_file '/etc/opscode/pivotal.pem' do
+  local_path '/tmp/stash/pivotal.pem'
+  machine 'bootstrap-backend'
+  action :download
+end
+
 machine 'frontend' do
   recipe 'chef-server-cluster::frontend'
   ohai_hints 'ec2' => '{}'
@@ -52,7 +58,8 @@ machine 'frontend' do
   converge true
   files(
         '/etc/opscode/webui_priv.pem' => '/tmp/stash/webui_priv.pem',
-        '/etc/opscode/webui_pub.pem' => '/tmp/stash/webui_pub.pem'
+        '/etc/opscode/webui_pub.pem' => '/tmp/stash/webui_pub.pem',
+        '/etc/opscode/pivotal.pem' => '/tmp/stash/pivotal.pem'
        )
 end
 
