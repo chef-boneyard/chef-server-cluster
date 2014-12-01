@@ -6,3 +6,4 @@ description      'A Chef cookbook from CHEF for managing Chef Server clusters. T
 version          '0.0.7'
 depends          'chef-server-ingredient'
 depends          'chef-vault'
+depends          'hostsfile'

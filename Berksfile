@@ -8,3 +8,5 @@ end
 
 # This cookbook isn't on supermarket.
 cookbook 'chef-server-ingredient', github: 'opscode-cookbooks/chef-server-ingredient'
+
+cookbook 'hostsfile', '~> 2.4.5'
