@@ -59,7 +59,7 @@ machine 'frontend' do
   files(
         '/etc/opscode/webui_priv.pem' => '/tmp/stash/webui_priv.pem',
         '/etc/opscode/webui_pub.pem' => '/tmp/stash/webui_pub.pem',
-        '/etc/opscode/pivotal.pem' => '/tmp/stash/pivotal.pem',
+        '/etc/opscode/pivotal.pem' => '/tmp/stash/pivotal.pem'
        )
 end
 
