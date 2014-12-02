@@ -39,10 +39,14 @@ end
 
 end
 
-machine_file '/etc/opscode/webui_pub.pem' do
-  local_path '/tmp/stash/webui_pub.pem'
-  machine 'bootstrap-backend'
-  action :download
+%w{ pivotal.pem webui_pub.pem }.each do |opscode_file|
+
+  machine_file "/etc/opscode/#{opscode_file}" do
+    local_path "/tmp/stash/#{opscode_file}"
+    machine 'bootstrap-backend'
+    action :download
+  end
+
 end
 
 machine 'frontend' do
@@ -52,7 +56,8 @@ machine 'frontend' do
   converge true
   files(
         '/etc/opscode/webui_priv.pem' => '/tmp/stash/webui_priv.pem',
-        '/etc/opscode/webui_pub.pem' => '/tmp/stash/webui_pub.pem'
+        '/etc/opscode/webui_pub.pem' => '/tmp/stash/webui_pub.pem',
+        '/etc/opscode/pivotal.pem' => '/tmp/stash/pivotal.pem'
        )
 end
 
