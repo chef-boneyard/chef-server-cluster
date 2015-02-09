@@ -25,7 +25,8 @@ node.default['chef-server-cluster']['bootstrap']['enable'] = true
 
 # TODO: (jtimberman) chef_vault_item. We sort this so we don't
 # get regenerated content in the private-chef-secrets.json later.
-chef_secrets = Hash[data_bag_item('secrets', "private-chef-secrets-#{node.chef_environment}")['data'].sort]
+chef_secrets      = Hash[data_bag_item('secrets', "private-chef-secrets-#{node.chef_environment}")['data'].sort]
+reporting_secrets = Hash[data_bag_item('secrets', "opscode-reporting-secrets-#{node.chef_environment}")['data'].sort]
 
 # It's easier to deal with a hash rather than a data bag item, since
 # we're not going to need any of the methods, we just need raw data.
@@ -66,6 +67,12 @@ file '/etc/opscode/private-chef-secrets.json' do
   sensitive true
 end
 
+file '/etc/opscode-reporting/opscode-reporting-secrets.json' do
+  content JSON.pretty_generate(reporting_secrets)
+  notifies :reconfigure, 'chef_server_ingredient[opscode-reporting]'
+  sensitive true
+end
+
 template '/etc/opscode/chef-server.rb' do
   source 'chef-server.rb.erb'
   variables :chef_server_config => node['chef-server-cluster'], :chef_servers => chef_servers
@@ -98,4 +105,8 @@ file '/etc/opscode/pivotal.pem' do
   # not actually work, as it checks the presence of this file.
   only_if { ::File.exists?('/etc/opscode/pivotal.pem') }
   subscribes :create, 'chef_server_ingredient[chef-server-core]', :immediately
+end
+
+chef_server_ingredient 'opscode-reporting' do
+  notifies :reconfigure, 'chef_server_ingredient[opscode-reporting]'
 end
