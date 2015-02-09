@@ -27,6 +27,10 @@ directory '/etc/opscode-analytics' do
   recursive true
 end
 
+directory '/etc/opscode-reporting' do
+  recursive true
+end
+
 chef_server_ingredient 'chef-server-core' do
   notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
 end
