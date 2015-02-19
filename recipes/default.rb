@@ -32,5 +32,6 @@ directory '/etc/opscode-reporting' do
 end
 
 chef_server_ingredient 'chef-server-core' do
-  notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
+  reconfigure true
+  action :install
 end

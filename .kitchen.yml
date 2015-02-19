@@ -1,14 +1,18 @@
 ---
 driver:
   name: vagrant
+
+driver_config:
   customize:
-    memory: 512
+    memory: 2048
+    cpus: 2
 
 provisioner:
   name: chef_zero
 
 platforms:
   - name: ubuntu-14.04
+  - name: centos-6.5
 
 suites:
   - name: fullstack
@@ -40,3 +44,13 @@ suites:
           enable: true
         opscode_webui:
           enable: true
+
+  - name: standalone
+    run_list:
+      - recipe[test::standalone_hostsfile]
+      - recipe[chef-server-cluster::standalone]
+      - recipe[test::admin_org]
+    attributes:
+    driver_config:
+      network:
+      - ["private_network", {ip: "33.33.33.10"}]
