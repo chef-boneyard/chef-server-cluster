@@ -170,6 +170,9 @@ See `attributes/default.rb` for default values. Here's how this cookbook's attri
 * `role`: sets the role for the specific node, affects how configuration is rendered in `/etc/opscode/chef-server.rb`.
 * `bootstrap['enable']`: whether bootstrapping Chef Server should be done. This triggers whether the configuration in `/etc/opscode/chef-server.rb` will run the bootstrap recipes. This should only be enabled on the first `backend` node in the cluster.
 * `aws`: A configuration hash for Amazon Web Services EC2, used by the chef-provisioning recipes to launch instances.
+* `aws['profile-or-role']`: sets the AWS profile or role to use. A value of
+  `IAM` will trigger the use of IAM roles; all other values will imply a
+  profile configured in ~/.aws/config; The default is `default`.
 * `aws['region']`: sets the region where the instances should be launched. The default is `us-west-2` because that's where CHEF's operations team is building the new infrastructure.
 * `aws['machine_options']`: this is a hash passed directly into the Chef Provisioning recipe DSL method, `with_machine_options`. If overriding these attributes, you probably want:
 

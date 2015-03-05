@@ -23,4 +23,11 @@ module ChefHelpers
   def self.secret_files
     %w{pivotal.cert  pivotal.pem  webui_priv.pem  webui_pub.pem  worker-private.pem  worker-public.pem}
   end
+
+  def self.provisioner_driver(node)
+    profile_or_role = node['chef-server-cluster']['aws']['profile-or-role']
+    region = node['chef-server-cluster']['aws']['region']
+
+    "fog:AWS:#{profile_or_role}:#{region}"
+  end
 end
