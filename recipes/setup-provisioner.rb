@@ -22,7 +22,5 @@ chef_gem 'chef-provisioning-fog'
 chef_gem 'chef-provisioning-aws'
 require 'chef/provisioning/fog_driver/driver'
 
-# This requires that the desired AWS account to use is configured in
-# ~/.aws/config as `default`.
-with_driver("fog:AWS:default:#{node['chef-server-cluster']['aws']['region']}")
+with_driver(ChefHelpers.provisioner_driver)
 with_machine_options(node['chef-server-cluster']['aws']['machine_options'])
