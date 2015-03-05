@@ -22,5 +22,5 @@ chef_gem 'chef-provisioning-fog'
 chef_gem 'chef-provisioning-aws'
 require 'chef/provisioning/fog_driver/driver'
 
-with_driver(ChefHelpers.provisioner_driver)
+with_driver(ChefHelpers.provisioner_driver(node))
 with_machine_options(node['chef-server-cluster']['aws']['machine_options'])
