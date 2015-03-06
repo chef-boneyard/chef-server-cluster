@@ -10,7 +10,7 @@ This cookbook reflects CHEF's operations team's opinions on building a scalable 
 
 ## Requirements
 
-There's a few steps to take to get the provisioning node ready to launch the cluster. This assumes a `chef-repo` is used and the cookbook is being used locally (e.g., berks installed into a vendor path, or a symlink to the cookbook's repository). These instructions are probably incomplete, but we'll improve them over time.
+There's a few steps to take to get the provisioning node ready to launch the cluster. This assumes a `chef-repo` is used and the cookbook is being used locally (e.g., berks installed into a vendor path, or a symlink to the cookbook's repository).
 
 It is assumed that these steps are done in the `chef-repo`.
 
@@ -33,7 +33,7 @@ There's a bug in chef-client's local mode, and I never narrowed it down. Running
 chef-zero -l debug -p 7799
 ```
 
-#### Create a .chef/knife.rb
+#### Create a .chef/config.rb
 
 I used `hc-metal-provisioner` as the name of the SSH key pair. It's likely this won't match what you're using, as I have the private key for this and you don't.
 
@@ -42,8 +42,6 @@ config_dir = File.dirname(__FILE__)
 chef_server_url 'http://localhost:7799'
 node_name        'chef-provisioner'
 cookbook_path [File.join(config_dir, '..', 'cookbooks')]
-private_keys 'hc-metal-provisioner' => '/tmp/ssh/id_rsa'
-public_keys  'hc-metal-provisioner' => '/tmp/ssh/id_rsa.pub'
 ```
 
 Change the `chef_server_url` and `node_name` as appropriate if using another Chef Server.
@@ -71,7 +69,7 @@ This data bag item informs configuration options that (may) need to be present i
 
 #### Create a secrets data bag and populate it with the SSH keys
 
-For example from above, I'm using an item named `hc-metal-provisioner-chef-aws-us-west-2`. This is hardcoded in the `chef-server-cluster::cluster-provision` recipe, but one could edit that or make it an attribute. This will move to a Chef Vault item at some point as noted in the comment in the recipe.
+For example from above, I'm using an item named `hc-metal-provisioner-chef-aws-us-west-2` from the attribute `node['chef-server-cluster']['chef-provisioner-key-name']`. This is not the same name as the actual SSH key in the AWS account I'm using, it's namespaced for the data bag.
 
 ```json
 {
@@ -81,7 +79,7 @@ For example from above, I'm using an item named `hc-metal-provisioner-chef-aws-u
 }
 ```
 
-Be sure the string values are a single line.
+Be sure the string values are a single line, replacing actual newlines in the files with `\n`.
 
 #### Create a "private-chef-secrets" data bag item
 
@@ -155,7 +153,7 @@ Navigate to https://frontend-fqdn and sign up!
 
 64 bit Ubuntu 14.04
 
-Other platforms will be added in the future according to the platforms that CHEF supports for Chef Server 12.
+Other platforms may be added in the future according to the platforms that CHEF supports for Chef Server 12.
 
 ### Cookbooks:
 
@@ -166,37 +164,57 @@ Other platforms will be added in the future according to the platforms that CHEF
 
 See `attributes/default.rb` for default values. Here's how this cookbook's attributes (`node['chef-server-cluster']`) work and/or affect behavior.
 
-* `topology`: configures the top-level topology in `/etc/opscode/chef-server.rb`
-* `role`: sets the role for the specific node, affects how configuration is rendered in `/etc/opscode/chef-server.rb`.
-* `bootstrap['enable']`: whether bootstrapping Chef Server should be done. This triggers whether the configuration in `/etc/opscode/chef-server.rb` will run the bootstrap recipes. This should only be enabled on the first `backend` node in the cluster.
-* `aws`: A configuration hash for Amazon Web Services EC2, used by the chef-provisioning recipes to launch instances.
-* `aws['region']`: sets the region where the instances should be launched. The default is `us-west-2` because that's where CHEF's operations team is building the new infrastructure.
-* `aws['machine_options']`: this is a hash passed directly into the Chef Provisioning recipe DSL method, `with_machine_options`. If overriding these attributes, you probably want:
+Attribute             | Description |Type | Default
+----------------------|-------------|-----|--------
+`topology`            | Configures the top-level topology in `/etc/opscode/chef-server.rb` | String | 'tier'
+`role`                | Sets the role for the specific node, affects how configuration is rendered in `/etc/opscode/chef-server.rb` | String | 'frontend'
+`bootstrap['enable']` | whether bootstrapping Chef Server should be done. This triggers whether the configuration in `/etc/opscode/chef-server.rb` will run the bootstrap recipes. This should only be enabled on the first `backend` node in the cluster. | Boolean | false
+`driver`              | A configuration hash for the chef-provisioning driver | Hash | See below
+`driver['gems']`      | An Array of Hashes that specify the gem name and the library to require, used to specify alternative chef-provisioning drivers and load them | Array of Hashes | [{'name' => 'chef-provisioning-aws', 'require' => 'chef/provisioning/aws_driver'}]
+`driver['with-parameter']`  | The parameter passed to the `with_driver` chef-provisioning Recipe DSL method used as the URI for the driver connection. | String | 'aws::us-west-2'
+`driver['machine_options']` | This is a hash passed directly into the Chef Provisioning recipe DSL method, `with_machine_options`. See below for further explanation | Hash | See `attributes/default.rb`.
+
+This cookbook is designed primarily to be used with AWS as that is our use case. However, by modifying the various `driver` attributes, other providers may be usable. This is unsupported, and may require additional configuration consideration.
+
+The `driver['with-parameter']` attribute will get passed to chef-provisioning's `with_driver` Recipe DSL method directly. Depending on what driver is used, the `driver['gems']` attribute may need to be changed to install and require another driver. For example in a recipe:
 
 ```ruby
-node['chef-server-cluster']['aws']['machine_options']['ssh_username']
-node['chef-server-cluster']['aws']['machine_options']['bootstrap_options']['key_name']
-node['chef-server-cluster']['aws']['machine_options']['bootstrap_options']['image_id']
+node.default['chef-server-cluster']['driver']['gems'] = [{
+  'name' => 'chef-provisioning-fog',
+  'require' => 'chef/provisioning/fog_driver'
+}]
+```
+
+In the `setup-provisioner` recipe, this will install `chef-provisioning-fog` with `chef_gem`, and then require the library `chef/provisioning/fog_driver` to make it usable for the `with_driver` and `with_machine_options` methods, which can then be used for creating instances with the new driver in the machine resources in the `cluster-provision` recipe.
+
+You'll need to consult the chef-provisioning driver documentation for the various options that can be used for `with_machine_options`. If you're using AWS and simply want to customize for your local environment, change these:
+
+```ruby
+node.default['chef-server-cluster']['driver']['machine_options']['ssh_username'] = 'not-ubuntu'
+node.default['chef-server-cluster']['driver']['machine_options']['bootstrap_options']['key_name'] = 'mykey-by-region'
+node.default['chef-server-cluster']['driver']['machine_options']['bootstrap_options']['image_id'] = 'ami-12345678'
+node.default['chef-server-cluster']['driver']['machine_options']['bootstrap_options']['instance_type'] = 'm1.small'
 ```
 
 * `ssh_username`: The default user on the AMI used, e.g. `ubuntu` or `root` (platform/AMI specific)
-* `key_name`: The name of the AWS SSH keypair.
-* `image_id`: The AMI to use. This must be changed per-region if `node['chef-server-cluster']['aws']['region']` is changed.
+* `key_name`: The name of the **unique** AWS SSH keypair. See the `setup-ssh-keys.rb` recipe description below for special considerations.
+* `image_id`: The AMI to use. This must be changed per-region if the region in `node['chef-server-cluster']['driver']['with-parameter']` is changed.
+* `instance_type`: Formerly `flavor_id`, this is the EC2 instance size on AWS.
 
 ## Recipes
 
 These may change wildly as we develop the cookbook. The intention behind the current recipes is:
 
-* analytics.rb: stands up a Chef Analytics server.
-* bootstrap.rb: the initial backend node in a cluster, should be the first node created. Other backend nodes may have a dedicated `backend` recipe they use. Or not.
+* analytics.rb: stands up a [Chef Analytics](http://docs.chef.io/analytics) server in [standalone mode](http://docs.chef.io/analytics/install_analytics.html#standalone-version-1-1).
+* [bootstrap.rb](https://github.com/opscode-cookbooks/chef-server-cluster/issues/30): the initial backend node in a cluster, should be the first node created.
+* cluster-clean.rb: cleans up all the instances. Don't use against a live running cluster! **This is provided for testing purposes only!! It will destroy all the cluster's data!**
+* cluster-provision.rb: performs the provisioning of the instances in the cluster.
 * default.rb: manage the common resources required by backend and frontend systems.
 * frontend.rb: stands up a front end system.
 * load-secrets.rb: loads secrets from a data bag (chef-vault). This is incomplete and non-functional at this time.
-* cluster-clean.rb: cleans up all the instances. Don't use against a live running cluster! **This is provided for testing purposes only!! It will destroy all the cluster's data!**
-* cluster-provision.rb: performs the provisioning of the instances in the cluster. In the future it will be more dynamic through the use of the topology data bag item.
-* setup-provisioner.rb: common options for "clean" and "provision" are initialized here.
 * save-secrets.rb: saves secrets to a data bag (chef-vault). This is incomplete and non-functional at this time.
-* standalone.rb: stands up a standalone single Chef Server.
+* setup-provisioner.rb: Installs the gems and for the chef-provisioning driver, and then requires the library. Does this during compile time specifically because the require must happen for recipe DSL methods provided by chef-provisioning.
+* setup-ssh-keys.rb: **Important** To attempt to be driver-agnostic, we rely on chef-provisioning's implicit configuration of SSH keys. You need to create your key ahead of time, and store it in a data bag item as described above. The `node['chef-server-cluster']['driver']['machine_options']['key_name']` key will be used. The content from the data bag item will be written to `~/.ssh/key_name` and `~/.ssh/key_name.pub` for the private and public keys respectively. Make sure your key name is unique!
 
 ## Documentation
 
@@ -204,17 +222,23 @@ This README serves as the only documentation for the cookbook at this time.
 
 Chef Server documentation:
 
-http://docs.getchef.com/server/
+* https://docs.chef.io/server/
 
 Chef Server configuration settings:
 
-https://docs.getchef.com/config_rb_chef_server_optional_settings.html
+* http://docs.chef.io/open_source/config_rb_chef_server_optional_settings.html
+
+## Issues
+
+Please report issues in this repository. Please also understand that this cookbook is intended to be narrow and opinionated in scope, and may not work for all use cases.
+
+* https://github.com/chef-cookbooks/chef-server-cluster/issues
 
 ## License and Author
 
-- Author: Paul Mooring <paul@getchef.com>
-- Author: Joshua Timberman <joshua@getchef.com>
-- Copyright (C) 2014 Chef Software, Inc. <legal@getchef.com>
+- Author: Paul Mooring <paul@chef.io>
+- Author: Joshua Timberman <joshua@chef.io>
+- Copyright (C) 2014-2015 Chef Software, Inc. <legal@chef.io>
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
