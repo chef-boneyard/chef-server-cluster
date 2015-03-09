@@ -17,12 +17,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# chef-provisioning-fog depends on chef-provisioning and cheffish.
-chef_gem 'chef-provisioning-fog'
-chef_gem 'chef-provisioning-aws'
-require 'chef/provisioning/fog_driver/driver'
+node['chef-server-cluster']['driver']['gems'].each do |g|
+  chef_gem g['name'] do
+    compile_time true if Chef::Resource::ChefGem.method_defined?(:compile_time)
+  end
 
-# This requires that the desired AWS account to use is configured in
-# ~/.aws/config as `default`.
-with_driver("fog:AWS:default:#{node['chef-server-cluster']['aws']['region']}")
-with_machine_options(node['chef-server-cluster']['aws']['machine_options'])
+  require g['require'] if g.has_key?('require')
+end
+
+# We're not doing anything special with regard to authentication
+# options here. WRT AWS, this assumes a default of ~/.aws/config.
+provisioner_machine_opts = node['chef-server-cluster']['driver']['machine_options'].to_hash
+ChefHelpers.symbolize_keys_deep!(provisioner_machine_opts)
+
+with_driver(node['chef-server-cluster']['driver']['with-parameter'])
+with_machine_options(provisioner_machine_opts)

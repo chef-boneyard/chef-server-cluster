@@ -22,6 +22,11 @@
 include_recipe 'chef-server-cluster::setup-provisioner'
 include_recipe 'chef-server-cluster::setup-ssh-keys'
 
+# we're going to stash files locally with machine_file, keep them in a tempdir
+directory '/tmp/stash' do
+  recursive true
+end
+
 machine 'bootstrap-backend' do
   recipe 'chef-server-cluster::bootstrap'
   ohai_hints 'ec2' => '{}'
