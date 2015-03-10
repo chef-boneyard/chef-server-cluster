@@ -19,7 +19,11 @@
 #
 # Maybe we'll use a data bag to store these
 node.default['chef-server-cluster']['role'] = 'analytics'
-analytics_fqdn = data_bag_item('chef_server', 'topology')['analytics_fqdn'] || node['ec2']['public_hostname']
+analytics_fqdn = begin
+  data_bag_item('chef_server', 'topology')['analytics_fqdn']
+rescue
+  ChefHelpers.get_aws_hostname(node)
+end
 
 # We define these here instead of including the default recipe because
 # analytics doesn't actually need chef-server-core.

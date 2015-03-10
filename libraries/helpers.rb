@@ -32,4 +32,20 @@ module ChefHelpers
       symbolize_keys_deep! h[ks] if h[ks].kind_of? Hash
     end
   end
+
+  # We will return the right IP to use depending wheter we need to
+  # use the Hostname, Public IP or the Private IP
+  def self.get_aws_hostname(node)
+    return node['hostname'] unless node['ec2']
+
+    if node['ec2']['public_hostname']
+      node['ec2']['public_hostname']
+    elsif node['ec2']['public_ipv4']
+      node['ec2']['public_ipv4']
+    elsif node['ec2']['local_ipv4']
+      node['ec2']['local_ipv4']
+    else
+      node['hostname']
+    end
+  end
 end
