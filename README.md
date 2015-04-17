@@ -121,6 +121,25 @@ Create `data_bags/secrets/private-chef-secrets-_default.json` data bag item with
 }
 ```
 
+#### Create a "opscode-reporting-secrets-_default.json" data bag item
+
+These are required for Chef Reporting and Chef Analytics to work properly. Each secret should be the specified number of characters due to the database schema.
+
+```json
+{
+  "id": "opscode-reporting-secrets-_default",
+  "data": {
+    "postgresql": {
+      "sql_password": "One-hundred characters",
+      "sql_ro_password": "One-hundred characters"
+    },
+    "opscode_reporting": {
+      "rabbitmq_password": "One-hundred characters"
+    }
+  }
+}
+```
+
 #### Upload the cookbook and data bag items to the server
 
 ```
