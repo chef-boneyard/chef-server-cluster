@@ -1,4 +1,6 @@
 # chef-server-cluster
+[![Build Status](https://travis-ci.org/chef-cookbooks/chef-server-cluster.svg?branch=master)](http://travis-ci.org/chef-cookbooks/chef-server-cluster)
+[![Cookbook Version](https://img.shields.io/cookbook/v/chef-server-cluster.svg)](https://supermarket.chef.io/cookbooks/chef-server-cluster)
 
 Manage Chef Server clusters with Chef, using chef-provisioning in a provisioning recipe that can run from a local machine, or a provisioning instance.
 
