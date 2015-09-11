@@ -65,7 +65,7 @@ This data bag item informs configuration options that (may) need to be present i
     "actions": true
   },
   "api_fqdn": "api.chef.sh",
-  "notification_email": "ops@getchef.com"
+  "notification_email": "ops@chef.io"
 }
 ```
 
@@ -179,7 +179,7 @@ Other platforms may be added in the future according to the platforms that CHEF 
 ### Cookbooks:
 
 * [chef-server-ingredient](https://github.com/chef-cookbooks/chef-server-ingredient): manages chef server components/addons and more.
-* [chef-vault](https://supermarket.getchef.com/cookbooks/chef-vault): required for secrets management (future plans)
+* [chef-vault](https://supermarket.chef.io/cookbooks/chef-vault): required for secrets management (future plans)
 
 ## Attributes
 

@@ -1,6 +1,6 @@
 name 'chef-server-cluster'
 maintainer 'Chef Software, Inc.'
-maintainer_email 'ops@getchef.com'
+maintainer_email 'ops@chef.io'
 license 'Apache 2.0'
 description 'A Chef cookbook from CHEF for managing Chef Server clusters. Turtles.'
 source_url 'https://github.com/chef-cookbooks/chef-server-cluster' if respond_to?(:source_url)
