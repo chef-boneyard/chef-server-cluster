@@ -7,4 +7,4 @@ group :integration do
 end
 
 # This cookbook isn't on supermarket.
-cookbook 'chef-server-ingredient', github: 'opscode-cookbooks/chef-server-ingredient'
+cookbook 'chef-server-ingredient', github: 'chef-cookbooks/chef-server-ingredient'

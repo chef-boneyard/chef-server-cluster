@@ -176,7 +176,7 @@ Other platforms may be added in the future according to the platforms that CHEF 
 
 ### Cookbooks:
 
-* [chef-server-ingredient](https://github.com/opscode-cookbooks/chef-server-ingredient): manages chef server components/addons and more.
+* [chef-server-ingredient](https://github.com/chef-cookbooks/chef-server-ingredient): manages chef server components/addons and more.
 * [chef-vault](https://supermarket.getchef.com/cookbooks/chef-vault): required for secrets management (future plans)
 
 ## Attributes
@@ -225,7 +225,7 @@ node.default['chef-server-cluster']['driver']['machine_options']['bootstrap_opti
 These may change wildly as we develop the cookbook. The intention behind the current recipes is:
 
 * analytics.rb: stands up a [Chef Analytics](http://docs.chef.io/analytics) server in [standalone mode](http://docs.chef.io/analytics/install_analytics.html#standalone-version-1-1).
-* [bootstrap.rb](https://github.com/opscode-cookbooks/chef-server-cluster/issues/30): the initial backend node in a cluster, should be the first node created.
+* [bootstrap.rb](https://github.com/chef-cookbooks/chef-server-cluster/issues/30): the initial backend node in a cluster, should be the first node created.
 * cluster-clean.rb: cleans up all the instances. Don't use against a live running cluster! **This is provided for testing purposes only!! It will destroy all the cluster's data!**
 * cluster-provision.rb: performs the provisioning of the instances in the cluster.
 * default.rb: manage the common resources required by backend and frontend systems.
