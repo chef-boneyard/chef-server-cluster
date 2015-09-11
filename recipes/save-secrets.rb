@@ -32,10 +32,8 @@ secret_files.each do |secret|
   next unless ::File.exist?(::File.join('/etc/opscode', secret))
   chef_vault_secret "store-generated-secret-#{secret}-#{node.chef_environment}" do
     data_bag data_bag_name
-    raw_data({
-        'id'=> "#{secret.gsub(/\.[a-z]+/, '_')}_#{node.chef_environment}",
-        'data' => IO.read("/etc/opscode/#{secret}")
-    })
+    raw_data('id' => "#{secret.gsub(/\.[a-z]+/, '_')}_#{node.chef_environment}",
+             'data' => IO.read("/etc/opscode/#{secret}"))
     admins 'admin'
     search '*:*'
   end

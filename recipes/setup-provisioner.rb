@@ -22,7 +22,7 @@ node['chef-server-cluster']['driver']['gems'].each do |g|
     compile_time true if Chef::Resource::ChefGem.method_defined?(:compile_time)
   end
 
-  require g['require'] if g.has_key?('require')
+  require g['require'] if g.key?('require')
 end
 
 # We're not doing anything special with regard to authentication

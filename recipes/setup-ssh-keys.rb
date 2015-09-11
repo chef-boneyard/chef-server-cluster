@@ -20,7 +20,7 @@
 # convention for the sub-key of where the secrets are. It should also
 # use an attribute for the name, so basically uncomment this line when
 # we're ready for that.
-#ssh_keys = chef_vault_item('vault', node['chef-server-cluster']['chef-provisioner-key-name'])['data']
+# ssh_keys = chef_vault_item('vault', node['chef-server-cluster']['chef-provisioner-key-name'])['data']
 ssh_keys = data_bag_item('secrets', node['chef-server-cluster']['chef-provisioner-key-name'])
 key_dir  = File.join(Dir.home, '.ssh')
 key_name = node['chef-server-cluster']['driver']['machine_options']['bootstrap_options']['key_name']

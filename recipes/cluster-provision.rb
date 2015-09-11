@@ -34,24 +34,20 @@ machine 'bootstrap-backend' do
   converge true
 end
 
-%w{ actions-source.json webui_priv.pem }.each do |analytics_file|
-
+%w( actions-source.json webui_priv.pem ).each do |analytics_file|
   machine_file "/etc/opscode-analytics/#{analytics_file}" do
     local_path "/tmp/stash/#{analytics_file}"
     machine 'bootstrap-backend'
     action :download
   end
-
 end
 
-%w{ pivotal.pem webui_pub.pem }.each do |opscode_file|
-
+%w( pivotal.pem webui_pub.pem ).each do |opscode_file|
   machine_file "/etc/opscode/#{opscode_file}" do
     local_path "/tmp/stash/#{opscode_file}"
     machine 'bootstrap-backend'
     action :download
   end
-
 end
 
 machine 'frontend' do
@@ -60,10 +56,10 @@ machine 'frontend' do
   action :converge
   converge true
   files(
-        '/etc/opscode/webui_priv.pem' => '/tmp/stash/webui_priv.pem',
-        '/etc/opscode/webui_pub.pem' => '/tmp/stash/webui_pub.pem',
-        '/etc/opscode/pivotal.pem' => '/tmp/stash/pivotal.pem'
-       )
+    '/etc/opscode/webui_priv.pem' => '/tmp/stash/webui_priv.pem',
+    '/etc/opscode/webui_pub.pem' => '/tmp/stash/webui_pub.pem',
+    '/etc/opscode/pivotal.pem' => '/tmp/stash/pivotal.pem'
+  )
 end
 
 machine 'analytics' do
@@ -72,7 +68,7 @@ machine 'analytics' do
   action :converge
   converge true
   files(
-        '/etc/opscode-analytics/actions-source.json' => '/tmp/stash/actions-source.json',
-        '/etc/opscode-analytics/webui_priv.pem' => '/tmp/stash/webui_priv.pem'
-       )
+    '/etc/opscode-analytics/actions-source.json' => '/tmp/stash/actions-source.json',
+    '/etc/opscode-analytics/webui_priv.pem' => '/tmp/stash/webui_priv.pem'
+  )
 end
