@@ -4,8 +4,8 @@ gem 'chef-provisioning'
 gem 'cheffish'
 
 group :lint do
-  gem 'foodcritic', '~> 4.0'
-  gem 'rubocop', '~> 0.33'
+  gem 'foodcritic', '~> 5.0'
+  gem 'rubocop', '~> 0.34'
   gem 'rake'
 end
 
