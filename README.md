@@ -1,4 +1,6 @@
 # chef-server-cluster
+note: Please take a look at https://github.com/chef-cookbooks/chef-reference as an alternative to this cookbook.
+
 [![Build Status](https://travis-ci.org/chef-cookbooks/chef-server-cluster.svg?branch=master)](http://travis-ci.org/chef-cookbooks/chef-server-cluster)
 [![Cookbook Version](https://img.shields.io/cookbook/v/chef-server-cluster.svg)](https://supermarket.chef.io/cookbooks/chef-server-cluster)
 
